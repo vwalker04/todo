@@ -21,7 +21,7 @@ class ItemControllerTest {
 
     @Test
     public void findItem_HappyPath() throws Exception {
-        this.mockMvc.perform(get("/"))
+        this.mockMvc.perform(get("/item"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("item")));
