@@ -27,15 +27,15 @@ class ItemRepositoryTest {
 
     @Test
     void canSaveAndRetrieveItem() {
-        Item itemToSave = new Item();
-        itemToSave.setDescription("test description");
+        Item item = new Item();
+        item.setDescription("test description");
 
-        itemRepository.save(itemToSave);
+        Item savedItem = itemRepository.save(item);
 
-        Item itemToRetrieve = itemRepository.findById(1L).orElseGet(() ->
+        Item itemToRetrieve = itemRepository.findById(savedItem.getId()).orElseGet(() ->
                 fail("Expected to retrieve an item but did not."));
 
-        assertThat(itemToRetrieve.getDescription()).isEqualTo(itemToSave.getDescription());
+        assertThat(itemToRetrieve.getDescription()).isEqualTo(item.getDescription());
     }
 
     @Test

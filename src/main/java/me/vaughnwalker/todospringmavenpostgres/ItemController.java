@@ -1,17 +1,22 @@
 package me.vaughnwalker.todospringmavenpostgres;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/item")
 public class ItemController {
 
-    @GetMapping()
+    private ItemRepository itemRepository;
+
+    public ItemController(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
+
+    @GetMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    String findItem() {
-        return "item";
+    ItemResponseDTO findItem(@PathVariable long itemId) {
+        Item item = itemRepository.findById(itemId).get();
+        return ItemResponseDTO.serializeFromItem(item);
     }
 }
