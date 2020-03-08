@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "item")
+@Table(name = "description")
 public class Item {
 
     @Id
@@ -13,17 +13,17 @@ public class Item {
     @NotNull
     private long id;
 
-    private String item;
+    private String description;
 
     public long getId() {
         return id;
     }
 
-    public String getItem() {
-        return item;
+    public String getDescription() {
+        return description;
     }
 
-    public void setItem(String item) {
-        this.item = item;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
