@@ -1,9 +1,11 @@
 package me.vaughnwalker.todospringmavenpostgres.repository.model.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import me.vaughnwalker.todospringmavenpostgres.repository.model.Item;
 
 @Data
+@NoArgsConstructor
 public class ItemResponseDTO {
     private long id;
     private String description;
