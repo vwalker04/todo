@@ -22,7 +22,7 @@ public class ItemController {
     @GetMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     ItemResponseDTO findItem(@PathVariable long itemId) {
-        Item item = itemService.findBy(itemId);
+        Item item = itemService.findById(itemId);
         return ItemResponseDTO.serializeFromItem(item);
     }
 

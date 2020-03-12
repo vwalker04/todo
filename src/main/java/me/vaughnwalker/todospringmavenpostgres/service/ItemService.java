@@ -20,7 +20,7 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    public Item findBy(long itemId) {
+    public Item findById(long itemId) {
         return itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
     }
 
