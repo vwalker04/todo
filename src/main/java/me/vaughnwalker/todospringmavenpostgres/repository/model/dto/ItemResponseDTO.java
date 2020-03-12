@@ -1,6 +1,7 @@
-package me.vaughnwalker.todospringmavenpostgres;
+package me.vaughnwalker.todospringmavenpostgres.repository.model.dto;
 
 import lombok.Data;
+import me.vaughnwalker.todospringmavenpostgres.repository.model.Item;
 
 @Data
 public class ItemResponseDTO {

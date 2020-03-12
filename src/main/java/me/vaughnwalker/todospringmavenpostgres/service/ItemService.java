@@ -1,5 +1,8 @@
-package me.vaughnwalker.todospringmavenpostgres;
+package me.vaughnwalker.todospringmavenpostgres.service;
 
+import me.vaughnwalker.todospringmavenpostgres.exception.ItemNotFoundException;
+import me.vaughnwalker.todospringmavenpostgres.repository.ItemRepository;
+import me.vaughnwalker.todospringmavenpostgres.repository.model.Item;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

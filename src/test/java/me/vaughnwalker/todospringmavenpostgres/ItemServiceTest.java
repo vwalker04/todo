@@ -1,5 +1,8 @@
 package me.vaughnwalker.todospringmavenpostgres;
 
+import me.vaughnwalker.todospringmavenpostgres.repository.ItemRepository;
+import me.vaughnwalker.todospringmavenpostgres.repository.model.Item;
+import me.vaughnwalker.todospringmavenpostgres.service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,4 +1,4 @@
-package me.vaughnwalker.todospringmavenpostgres;
+package me.vaughnwalker.todospringmavenpostgres.exception;
 
 public class ItemNotFoundException extends RuntimeException {
 

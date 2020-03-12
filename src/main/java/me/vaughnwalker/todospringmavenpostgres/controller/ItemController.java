@@ -1,5 +1,9 @@
-package me.vaughnwalker.todospringmavenpostgres;
+package me.vaughnwalker.todospringmavenpostgres.controller;
 
+import me.vaughnwalker.todospringmavenpostgres.repository.model.dto.ItemResponseDTO;
+import me.vaughnwalker.todospringmavenpostgres.service.ItemService;
+import me.vaughnwalker.todospringmavenpostgres.repository.model.Item;
+import me.vaughnwalker.todospringmavenpostgres.repository.model.dto.ItemDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/item")
 public class ItemController {
 
-    //    private ItemRepository itemRepository;
     private ItemService itemService;
 
     public ItemController(ItemService itemService) {

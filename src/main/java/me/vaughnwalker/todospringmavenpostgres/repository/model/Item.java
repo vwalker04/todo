@@ -1,4 +1,4 @@
-package me.vaughnwalker.todospringmavenpostgres;
+package me.vaughnwalker.todospringmavenpostgres.repository.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
