@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/item")
 public class ItemController {
 
-    private ItemRepository itemRepository;
+    //    private ItemRepository itemRepository;
+    private ItemService itemService;
 
-    public ItemController(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     ItemResponseDTO findItem(@PathVariable long itemId) {
-        //TODO: Handle this
-        Item item = itemRepository.findById(itemId).get();
+        Item item = itemService.findBy(itemId);
         return ItemResponseDTO.serializeFromItem(item);
     }
 
@@ -28,7 +28,7 @@ public class ItemController {
     public ItemResponseDTO createItem(@RequestBody ItemDTO itemDTO) {
         Item item = new Item();
         item.setDescription(itemDTO.getDescription());
-        Item savedItem = itemRepository.save(item);
+        Item savedItem = itemService.save(item);
         return ItemResponseDTO.serializeFromItem(savedItem);
     }
 }
