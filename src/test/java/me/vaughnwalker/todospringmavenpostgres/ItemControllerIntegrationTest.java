@@ -46,4 +46,5 @@ class ItemControllerIntegrationTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.description").value(ITEM_DESCRIPTION));
     }
+
 }
