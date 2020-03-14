@@ -15,6 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -91,30 +94,26 @@ class ItemControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-//    void findAll_returnsItemList() throws Exception {
-//        ItemResponseDTO itemOne = new ItemResponseDTO();
-//        String descriptionOne = "first description";
-//        itemOne.setDescription(descriptionOne);
-//
-//        ItemResponseDTO itemTwo = new ItemResponseDTO();
-//        String descriptionTwo = "second description";
-//        itemTwo.setDescription(descriptionTwo);
-//
-//        String jsonPayload = mapper.writeValueAsString(itemOne);
-//        this.mockMvc.perform(post(ITEM_URL)
-//                .content(jsonPayload)
-//                .contentType(MediaType.APPLICATION_JSON));
-//
-//        String jsonPayload2 = mapper.writeValueAsString(itemTwo);
-//        this.mockMvc.perform(post(ITEM_URL)
-//                .content(jsonPayload2)
-//                .contentType(MediaType.APPLICATION_JSON));
-//
-//        this.mockMvc.perform(get(ITEM_URL))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$").isArray())
-//                .andExpect(jsonPath("$.[0].description").value(descriptionOne))
-//                .andExpect(jsonPath("$.[1].description").value(descriptionTwo));
-//    }
+    @Test
+    void findAll_returnsItemList() throws Exception {
+        Item itemOne = new Item();
+        String descriptionOne = "first description";
+        itemOne.setDescription(descriptionOne);
+
+        Item itemTwo = new Item();
+        String descriptionTwo = "second description";
+        itemTwo.setDescription(descriptionTwo);
+
+        List<Item> items = new ArrayList<>();
+        items.add(itemOne);
+        items.add(itemTwo);
+
+        when(itemService.findAll()).thenReturn(items);
+
+        this.mockMvc.perform(get(ITEM_URL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.[0].description").value(descriptionOne))
+                .andExpect(jsonPath("$.[1].description").value(descriptionTwo));
+    }
 }
