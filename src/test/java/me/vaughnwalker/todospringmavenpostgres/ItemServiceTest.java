@@ -1,5 +1,6 @@
 package me.vaughnwalker.todospringmavenpostgres;
 
+import me.vaughnwalker.todospringmavenpostgres.exception.ArgumentNullException;
 import me.vaughnwalker.todospringmavenpostgres.exception.ItemNotFoundException;
 import me.vaughnwalker.todospringmavenpostgres.repository.ItemRepository;
 import me.vaughnwalker.todospringmavenpostgres.repository.model.Item;
@@ -15,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -86,5 +88,14 @@ class ItemServiceTest {
         Item actualItem = itemRepository.save(item);
 
         assertThat(actualItem.getDescription()).isEqualTo(item.getDescription());
+    }
+
+    @Test
+    void save_throwsArgumentNullExceptionWhenEmpty() {
+        Item empty = new Item();
+        empty.setDescription("");
+
+        assertThatExceptionOfType(ArgumentNullException.class).isThrownBy(() ->
+                itemService.save(empty));
     }
 }
