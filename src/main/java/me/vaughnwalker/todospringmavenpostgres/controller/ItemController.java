@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class ItemController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ItemResponseDTO createItem(@Valid @RequestBody ItemDTO itemDTO) {
+    public ItemResponseDTO createItem(@RequestBody ItemDTO itemDTO) {
         Item item = new Item();
         item.setDescription(itemDTO.getDescription());
         Item savedItem = itemService.save(item);

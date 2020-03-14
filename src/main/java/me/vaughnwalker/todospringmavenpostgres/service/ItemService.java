@@ -1,5 +1,6 @@
 package me.vaughnwalker.todospringmavenpostgres.service;
 
+import me.vaughnwalker.todospringmavenpostgres.exception.ArgumentNullException;
 import me.vaughnwalker.todospringmavenpostgres.exception.ItemNotFoundException;
 import me.vaughnwalker.todospringmavenpostgres.repository.ItemRepository;
 import me.vaughnwalker.todospringmavenpostgres.repository.model.Item;
@@ -25,6 +26,9 @@ public class ItemService {
     }
 
     public Item save(Item item) {
+        if (item.getDescription().isEmpty()) {
+            throw new ArgumentNullException();
+        }
         return itemRepository.save(item);
     }
 }
