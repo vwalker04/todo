@@ -1,11 +1,13 @@
 package me.vaughnwalker.todospringmavenpostgres.repository.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.vaughnwalker.todospringmavenpostgres.repository.model.Item;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class ItemResponseDTO {
     private long id;
     private String description;
