@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -92,6 +93,18 @@ class ItemControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void findAll_returnsEmptyList() throws Exception {
+        List<Item> emptyList = Collections.emptyList();
+
+        when(itemService.findAll()).thenReturn(emptyList);
+
+        this.mockMvc.perform(get(ITEM_URL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
