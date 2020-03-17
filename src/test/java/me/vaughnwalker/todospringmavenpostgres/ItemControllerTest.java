@@ -20,8 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ItemController.class)
 class ItemControllerTest {
 
-    private static final String ITEM_URL = "/item/";
+    private static final String ITEM_URL = "/items/";
 
     @Autowired
     private MockMvc mockMvc;
@@ -63,17 +62,19 @@ class ItemControllerTest {
 
     @Test
     void createItem_returnsItem() throws Exception {
-        Item itemToSave = new Item(1L, "a description");
+        ItemDTO itemToSave = new ItemDTO();
+        itemToSave.setDescription("hey I'm a thing.");
 
         String body = mapper.writeValueAsString(itemToSave);
 
-        when(itemService.save(Mockito.any())).thenReturn(itemToSave);
+        Item item = new Item(1L, itemToSave.getDescription());
+        when(itemService.save(Mockito.any())).thenReturn(item);
 
         this.mockMvc.perform(post(ITEM_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(itemToSave.getId()))
+                .andExpect(jsonPath("$.id").value(item.getId()))
                 .andExpect(jsonPath("$.description").value(itemToSave.getDescription()));
     }
 
@@ -128,5 +129,25 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.[0].description").value(descriptionOne))
                 .andExpect(jsonPath("$.[1].description").value(descriptionTwo));
+    }
+
+    @Test
+    void updateItem_returnsUpdatedItem() throws Exception {
+        ItemDTO itemToUpdate = new ItemDTO();
+        itemToUpdate.setDescription("new description of item.");
+
+        Item item = new Item(123L, itemToUpdate.getDescription());
+
+        String body = mapper.writeValueAsString(itemToUpdate);
+
+        when(itemService.updateItem(Mockito.any(Item.class))).thenReturn(item);
+
+        this.mockMvc.perform(put(ITEM_URL + item.getId())
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(123L))
+                .andExpect(jsonPath("$.description").value("new description of item."));
     }
 }

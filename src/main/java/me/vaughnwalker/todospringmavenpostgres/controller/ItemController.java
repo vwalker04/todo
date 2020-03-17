@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/item")
+@RequestMapping(value = "/items")
 public class ItemController {
 
     private ItemService itemService;
@@ -22,10 +22,10 @@ public class ItemController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    ItemResponseDTO findItem(@PathVariable long itemId) {
-        Item item = itemService.findById(itemId);
+    ItemResponseDTO findItem(@PathVariable long id) {
+        Item item = itemService.findById(id);
         return ItemResponseDTO.serializeFromItem(item);
     }
 
@@ -48,5 +48,13 @@ public class ItemController {
             itemResponseDTOList.add(ItemResponseDTO.serializeFromItem(item));
         }
         return itemResponseDTOList;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ItemResponseDTO updateItem(@PathVariable long id, @RequestBody ItemDTO itemDTO) {
+        Item itemToUpdate = new Item(id, itemDTO.getDescription());
+        Item updatedItem = itemService.updateItem(itemToUpdate);
+        return ItemResponseDTO.serializeFromItem(updatedItem);
     }
 }
