@@ -57,7 +57,9 @@ class ItemControllerTest {
     @Test
     void findItemById_whenNotExists_shouldThrowItemNotFoundException() throws Exception {
         when(itemService.findById(Mockito.anyLong())).thenThrow(ItemNotFoundException.class);
-        this.mockMvc.perform(get(ITEM_URL + "{itemId}", Mockito.anyLong())).andDo(print()).andExpect(status().is4xxClientError());
+        this.mockMvc.perform(get(ITEM_URL + "{id}", Mockito.anyLong()))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -149,5 +151,21 @@ class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(123L))
                 .andExpect(jsonPath("$.description").value("new description of item."));
+    }
+
+    @Test
+    void updateItem_whenNotExists_shouldThrowItemNotFoundException() throws Exception {
+        ItemDTO nonExistingItem = new ItemDTO();
+        nonExistingItem.setDescription("something");
+
+        String body = mapper.writeValueAsString(nonExistingItem);
+
+        when(itemService.updateItem(Mockito.any(Item.class))).thenThrow(ItemNotFoundException.class);
+
+        this.mockMvc.perform(put(ITEM_URL + "{id}", Mockito.anyLong())
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 }
