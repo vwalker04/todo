@@ -26,9 +26,20 @@ public class ItemService {
     }
 
     public Item save(Item item) {
+        validateDescription(item);
+        return itemRepository.save(item);
+    }
+
+    public Item updateItem(Item item) {
+        Item lookUpItem = findById(item.getId());
+        validateDescription(item);
+        lookUpItem.setDescription(item.getDescription());
+        return itemRepository.save(lookUpItem);
+    }
+
+    private void validateDescription(Item item) {
         if (item.getDescription().isEmpty()) {
             throw new ArgumentNullException();
         }
-        return itemRepository.save(item);
     }
 }

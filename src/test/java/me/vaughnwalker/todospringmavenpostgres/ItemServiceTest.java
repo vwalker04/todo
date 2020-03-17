@@ -76,18 +76,18 @@ class ItemServiceTest {
         when(itemRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(ItemNotFoundException.class).isThrownBy(() ->
-            itemService.findById(1234L));
+                itemService.findById(1234L));
     }
 
     @Test
     void save_returnsItem() {
-        Item item = new Item(1L, "a description");
+        Item itemToSave = new Item(1L, "a description");
 
-        when(itemRepository.save(Mockito.any(Item.class))).thenReturn(item);
+        when(itemRepository.save(Mockito.any(Item.class))).thenReturn(itemToSave);
 
-        Item actualItem = itemRepository.save(item);
+        Item actualItem = itemService.save(itemToSave);
 
-        assertThat(actualItem.getDescription()).isEqualTo(item.getDescription());
+        assertThat(actualItem).isEqualTo(itemToSave);
     }
 
     @Test
@@ -97,5 +97,29 @@ class ItemServiceTest {
 
         assertThatExceptionOfType(ArgumentNullException.class).isThrownBy(() ->
                 itemService.save(empty));
+    }
+
+    @Test
+    void updateItem_returnsUpdatedItem() {
+        Item oldItem = new Item(1L, "old description");
+        Item updatedItem = new Item(oldItem.getId(), "new description");
+
+        when(itemRepository.findById(oldItem.getId())).thenReturn(Optional.of(oldItem));
+        when(itemRepository.save((Mockito.any(Item.class)))).thenReturn(updatedItem);
+
+        Item actualItem = itemService.updateItem(updatedItem);
+
+        assertThat(actualItem.getId()).isEqualTo(oldItem.getId());
+        assertThat(actualItem.getDescription()).isEqualTo(updatedItem.getDescription());
+    }
+
+    @Test
+    void updatedItem_throwsArgumentNullExceptionWhenEmpty() {
+        Item invalidItem = new Item(1L, "");
+
+        when(itemRepository.findById(invalidItem.getId())).thenReturn(Optional.of(invalidItem));
+
+        assertThatExceptionOfType(ArgumentNullException.class).isThrownBy(() ->
+                itemService.updateItem(invalidItem));
     }
 }
