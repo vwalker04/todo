@@ -34,10 +34,10 @@ class ItemControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    ItemService itemService;
+    private ItemService itemService;
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
 
     @Test
     void findItemById_shouldReturnItemFromService() throws Exception {
@@ -74,7 +74,9 @@ class ItemControllerTest {
 
         this.mockMvc.perform(post(ITEM_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(body)
+                .characterEncoding("utf-8"))
+                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(item.getId()))
                 .andExpect(jsonPath("$.description").value(itemToSave.getDescription()));
@@ -94,7 +96,9 @@ class ItemControllerTest {
 
         this.mockMvc.perform(post(ITEM_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(body)
+                .characterEncoding("utf-8"))
+                .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
@@ -135,28 +139,30 @@ class ItemControllerTest {
 
     @Test
     void updateItem_returnsUpdatedItem() throws Exception {
-        ItemDTO itemToUpdate = new ItemDTO();
-        itemToUpdate.setDescription("new description of item.");
+        String description = "new description of item.";
+        long id = 123L;
 
-        Item item = new Item(123L, itemToUpdate.getDescription());
+        ItemDTO itemToUpdate = new ItemDTO();
+        itemToUpdate.setDescription(description);
+        Item item = new Item(id, itemToUpdate.getDescription());
 
         String body = mapper.writeValueAsString(itemToUpdate);
 
-        when(itemService.updateItem(Mockito.any(Item.class))).thenReturn(item);
+        when(itemService.updateItem(item)).thenReturn(item);
 
         this.mockMvc.perform(put(ITEM_URL + item.getId())
                 .content(body)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(123L))
-                .andExpect(jsonPath("$.description").value("new description of item."));
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.description").value(description));
     }
 
     @Test
     void updateItem_whenNotExists_shouldThrowItemNotFoundException() throws Exception {
-        ItemDTO nonExistingItem = new ItemDTO();
-        nonExistingItem.setDescription("something");
+        ItemDTO nonExistingItem = new ItemDTO("for an item that doesn't exist");
 
         String body = mapper.writeValueAsString(nonExistingItem);
 
@@ -164,7 +170,8 @@ class ItemControllerTest {
 
         this.mockMvc.perform(put(ITEM_URL + "{id}", Mockito.anyLong())
                 .content(body)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
     }
