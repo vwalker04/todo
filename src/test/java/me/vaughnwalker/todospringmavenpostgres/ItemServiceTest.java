@@ -102,7 +102,7 @@ class ItemServiceTest {
     @Test
     void updateItem_returnsUpdatedItem() {
         Item oldItem = new Item(1L, "old description", false);
-        Item updatedItem = new Item(oldItem.getId(), "new description", false);
+        Item updatedItem = new Item(oldItem.getId(), "new description", true);
 
         when(itemRepository.findById(oldItem.getId())).thenReturn(Optional.of(oldItem));
         when(itemRepository.save((Mockito.any(Item.class)))).thenReturn(updatedItem);
@@ -110,21 +110,8 @@ class ItemServiceTest {
         Item actualItem = itemService.updateItem(updatedItem);
 
         assertThat(actualItem.getId()).isEqualTo(oldItem.getId());
+        assertThat(actualItem.isDone()).isTrue();
         assertThat(actualItem.getDescription()).isEqualTo(updatedItem.getDescription());
-    }
-
-    @Test
-    void updatedItem_makeAsDone_returnsUpdatedItem() {
-        Item oldItem = new Item(19L, "Make cookies", false);
-        Item updatedItem = new Item(19L, oldItem.getDescription(), true);
-
-        when(itemRepository.findById(oldItem.getId())).thenReturn(Optional.of(oldItem));
-        when(itemRepository.save(Mockito.any(Item.class))).thenReturn(updatedItem);
-
-        Item actualItem = itemService.updateItem(updatedItem);
-
-        assertThat(actualItem.getId()).isEqualTo(oldItem.getId());
-        assertThat(actualItem.isDone()).isEqualTo(true);
     }
 
     @Test

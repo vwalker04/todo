@@ -1,5 +1,6 @@
 package me.vaughnwalker.todospringmavenpostgres.repository.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,5 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ItemDTO {
     private String description;
-    private boolean isDone;
+
+    @JsonProperty("isDone")
+    private boolean isDone = false;
 }

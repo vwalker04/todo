@@ -34,6 +34,7 @@ public class ItemService {
         Item lookUpItem = findById(item.getId());
         validateDescription(item);
         lookUpItem.setDescription(item.getDescription());
+        lookUpItem.setDone(item.isDone());
         return itemRepository.save(lookUpItem);
     }
 
