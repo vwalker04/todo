@@ -43,8 +43,8 @@ class ItemServiceTest {
         final String description1 = "description1";
         final String description2 = "description2";
 
-        Item itemOne = new Item(1L, description1);
-        Item itemTwo = new Item(2L, description2);
+        Item itemOne = new Item(1L, description1, false);
+        Item itemTwo = new Item(2L, description2, false);
 
         List<Item> items = new ArrayList<>();
         items.add(itemOne);
@@ -62,7 +62,7 @@ class ItemServiceTest {
     @Test
     void findById_returnsItem() {
         long itemId = 1L;
-        Item item = new Item(itemId, "some item");
+        Item item = new Item(itemId, "some completed item", true);
 
         when(itemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(item));
 
@@ -81,7 +81,7 @@ class ItemServiceTest {
 
     @Test
     void save_returnsItem() {
-        Item itemToSave = new Item(1L, "a description");
+        Item itemToSave = new Item(1L, "a description", false);
 
         when(itemRepository.save(Mockito.any(Item.class))).thenReturn(itemToSave);
 
@@ -101,8 +101,8 @@ class ItemServiceTest {
 
     @Test
     void updateItem_returnsUpdatedItem() {
-        Item oldItem = new Item(1L, "old description");
-        Item updatedItem = new Item(oldItem.getId(), "new description");
+        Item oldItem = new Item(1L, "old description", false);
+        Item updatedItem = new Item(oldItem.getId(), "new description", false);
 
         when(itemRepository.findById(oldItem.getId())).thenReturn(Optional.of(oldItem));
         when(itemRepository.save((Mockito.any(Item.class)))).thenReturn(updatedItem);
@@ -114,8 +114,22 @@ class ItemServiceTest {
     }
 
     @Test
+    void updatedItem_makeAsDone_returnsUpdatedItem() {
+        Item oldItem = new Item(19L, "Make cookies", false);
+        Item updatedItem = new Item(19L, oldItem.getDescription(), true);
+
+        when(itemRepository.findById(oldItem.getId())).thenReturn(Optional.of(oldItem));
+        when(itemRepository.save(Mockito.any(Item.class))).thenReturn(updatedItem);
+
+        Item actualItem = itemService.updateItem(updatedItem);
+
+        assertThat(actualItem.getId()).isEqualTo(oldItem.getId());
+        assertThat(actualItem.isDone()).isEqualTo(true);
+    }
+
+    @Test
     void updatedItem_throwsArgumentNullExceptionWhenEmpty() {
-        Item invalidItem = new Item(1L, "");
+        Item invalidItem = new Item(1L, "", false);
 
         when(itemRepository.findById(invalidItem.getId())).thenReturn(Optional.of(invalidItem));
 

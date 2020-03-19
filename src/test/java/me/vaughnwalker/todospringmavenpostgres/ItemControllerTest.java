@@ -43,15 +43,17 @@ class ItemControllerTest {
     void findItemById_shouldReturnItemFromService() throws Exception {
         final long id = 123L;
         final String description = "a description";
-        Item mockItem = new Item(id, description);
+        Item mockItem = new Item(id, description, false);
 
         when(itemService.findById(id)).thenReturn(mockItem);
 
-        this.mockMvc.perform(get(ITEM_URL + id))
+        this.mockMvc.perform(get(ITEM_URL + id)
+                .characterEncoding("utf-8"))
                 .andDo((print()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.description").value(description));
+                .andExpect(jsonPath("$.description").value(description))
+                .andExpect(jsonPath("$.isDone").value(false));
     }
 
     @Test
@@ -69,7 +71,7 @@ class ItemControllerTest {
 
         String body = mapper.writeValueAsString(itemToSave);
 
-        Item item = new Item(1L, itemToSave.getDescription());
+        Item item = new Item(1L, itemToSave.getDescription(), false);
         when(itemService.save(Mockito.any())).thenReturn(item);
 
         this.mockMvc.perform(post(ITEM_URL)
@@ -79,7 +81,8 @@ class ItemControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(item.getId()))
-                .andExpect(jsonPath("$.description").value(itemToSave.getDescription()));
+                .andExpect(jsonPath("$.description").value(itemToSave.getDescription()))
+                .andExpect(jsonPath("$.isDone").value(false));
     }
 
     @Test
@@ -116,13 +119,11 @@ class ItemControllerTest {
 
     @Test
     void findAll_returnsItemList() throws Exception {
-        Item itemOne = new Item();
-        String descriptionOne = "first description";
-        itemOne.setDescription(descriptionOne);
+        String itemOneDescription = "first description";
+        Item itemOne = new Item(1L, itemOneDescription, false);
 
-        Item itemTwo = new Item();
         String descriptionTwo = "second description";
-        itemTwo.setDescription(descriptionTwo);
+        Item itemTwo = new Item(2L, descriptionTwo, true);
 
         List<Item> items = new ArrayList<>();
         items.add(itemOne);
@@ -133,8 +134,10 @@ class ItemControllerTest {
         this.mockMvc.perform(get(ITEM_URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.[0].description").value(descriptionOne))
-                .andExpect(jsonPath("$.[1].description").value(descriptionTwo));
+                .andExpect(jsonPath("$.[0].description").value(itemOneDescription))
+                .andExpect(jsonPath("$.[0].isDone").value(false))
+                .andExpect(jsonPath("$.[1].description").value(descriptionTwo))
+                .andExpect(jsonPath("$.[1].isDone").value(true));
     }
 
     @Test
@@ -144,11 +147,11 @@ class ItemControllerTest {
 
         ItemDTO itemToUpdate = new ItemDTO();
         itemToUpdate.setDescription(description);
-        Item item = new Item(id, itemToUpdate.getDescription());
+        Item item = new Item(id, itemToUpdate.getDescription(), false);
 
         String body = mapper.writeValueAsString(itemToUpdate);
 
-        when(itemService.updateItem(item)).thenReturn(item);
+        when(itemService.updateItem(Mockito.any(Item.class))).thenReturn(item);
 
         this.mockMvc.perform(put(ITEM_URL + item.getId())
                 .content(body)
@@ -161,8 +164,28 @@ class ItemControllerTest {
     }
 
     @Test
+    void updateItem_makeAsDone_returnsUpdatedItem() throws Exception {
+        ItemDTO itemToMakeAsDone = new ItemDTO("To rule the world", true);
+        Item itemToReturn = new Item(909L, itemToMakeAsDone.getDescription(), itemToMakeAsDone.isDone());
+
+        String body = mapper.writeValueAsString(itemToMakeAsDone);
+
+        when(itemService.updateItem(Mockito.any(Item.class))).thenReturn(itemToReturn);
+
+        this.mockMvc.perform(put(ITEM_URL + itemToReturn.getId())
+                .characterEncoding("utf-8")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(itemToReturn.getId()))
+                .andExpect(jsonPath("$.description").value(itemToMakeAsDone.getDescription()))
+                .andExpect(jsonPath("$.isDone").value(true));
+    }
+
+    @Test
     void updateItem_whenNotExists_shouldThrowItemNotFoundException() throws Exception {
-        ItemDTO nonExistingItem = new ItemDTO("for an item that doesn't exist");
+        ItemDTO nonExistingItem = new ItemDTO("for an item that doesn't exist", false);
 
         String body = mapper.writeValueAsString(nonExistingItem);
 

@@ -53,7 +53,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ItemResponseDTO updateItem(@PathVariable long id, @RequestBody ItemDTO itemDTO) {
-        Item itemToUpdate = new Item(id, itemDTO.getDescription());
+        Item itemToUpdate = new Item(id, itemDTO.getDescription(), itemDTO.isDone());
         Item updatedItem = itemService.updateItem(itemToUpdate);
         return ItemResponseDTO.serializeFromItem(updatedItem);
     }

@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ItemDTO {
     private String description;
+    private boolean isDone;
 }
